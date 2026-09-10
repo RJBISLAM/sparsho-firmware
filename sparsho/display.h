@@ -10,7 +10,7 @@
 #include <stdint.h>
 
 #ifndef NUM_CELLS
-#define NUM_CELLS 2 /* matches the 2-cell / 4-motor hardware currently wired */
+#define NUM_CELLS 5 /* matches the 5-cell / 10-motor hardware currently wired */
 #endif
 
 void display_init(void);
