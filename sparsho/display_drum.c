@@ -21,7 +21,7 @@
 /* Motors moving at once. A 28BYJ-48 pulls about 200 mA while stepping, so
  * four of them plus the logic stays under 1 A — comfortable on a 5 V 2 A
  * supply. Raise this only with a bigger supply. */
-#define MAX_CONCURRENT  4
+#define MAX_CONCURRENT  2  /* DIAGNOSTIC: lowered from 4 — testing for a brownout/reset loop at 10 motors */
 
 /* 74HC595 chain on PORTB */
 #define SR_PORT   PORTB
