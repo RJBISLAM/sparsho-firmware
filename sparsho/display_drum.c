@@ -148,10 +148,18 @@ ISR(TIMER1_COMPA_vect)
 {
     if (!moving) return;
 
+    /* Rotates which drums get first claim on the MAX_CONCURRENT slots each
+     * tick, so with more drums than slots (NUM_CELLS > 2) every cell still
+     * visibly moves from the start instead of the low-index cells finishing
+     * first while the rest sit untouched. Total time is unchanged — it's
+     * still bounded by total drum-steps / MAX_CONCURRENT — only the order
+     * is fairer. */
+    static uint8_t start = 0;
     uint8_t stepped = 0;
     uint8_t busy = 0;
 
-    for (uint8_t i = 0; i < NUM_DRUMS; i++) {
+    for (uint8_t n = 0; n < NUM_DRUMS; n++) {
+        uint8_t i = (uint8_t)((start + n) % NUM_DRUMS);
         if (remaining[i] == 0) continue;
         busy = 1;
         if (stepped >= MAX_CONCURRENT) continue;
@@ -160,6 +168,7 @@ ISR(TIMER1_COMPA_vect)
         else                  { phase[i] = (uint8_t)((phase[i] + 7u) & 7u); remaining[i]++; }
         stepped++;
     }
+    start = (uint8_t)((start + MAX_CONCURRENT) % NUM_DRUMS);
 
     if (stepped) {
         shift_out();
